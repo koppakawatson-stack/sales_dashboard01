@@ -12,22 +12,33 @@ const connectRedis = async () => {
     redisClient = createClient({
       url: process.env.REDIS_URL || 'redis://localhost:6379',
       socket: {
-        connectTimeout: 1000,
-        reconnectStrategy: (retries) => {
-          if (retries > 1) return false;
-          return 500;
-        },
+        connectTimeout: 1500,
+        reconnectStrategy: () => false, // Do not hang reconnecting forever
       },
     });
     redisClient.on('error', (err) => {
       stats.failures++;
       console.warn('⚠️  Redis Client Error (non-fatal, fallback to MongoDB):', err.message);
     });
-    redisClient.on('connect', () => console.log('✅ Redis Connected'));
-    await redisClient.connect();
+
+    const connectPromise = redisClient.connect().then(async () => {
+      await redisClient.ping();
+      console.log('✅ Redis Connected & Verified');
+    });
+
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Redis connection timed out (1500ms)')), 1500)
+    );
+
+    await Promise.race([connectPromise, timeoutPromise]);
   } catch (error) {
     stats.failures++;
-    console.warn('⚠️  Redis connection failed (running with MongoDB-only mode):', error.message);
+    console.warn('⚠️  Redis unavailable (running with MongoDB-only mode):', error.message);
+    try {
+      if (redisClient) {
+        redisClient.disconnect().catch(() => {});
+      }
+    } catch {}
     redisClient = null;
   }
 };

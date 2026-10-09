@@ -111,13 +111,30 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const start = async () => {
-  await connectDB();
-  await connectRedis();
-  initFollowUpQueue();
-  app.listen(PORT, () => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error(`❌ Database initialization failed: ${err.message}`);
+  }
+
+  const server = app.listen(PORT, () => {
     console.log(`🚀 Harvik Sales API v1 running on http://localhost:${PORT}`);
     console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   });
+
+  server.on('error', (err) => {
+    console.error(`❌ Server listen error: ${err.message}`);
+  });
+
+  // Non-blocking initialization of optional caching & background queue
+  (async () => {
+    try {
+      await connectRedis();
+      initFollowUpQueue();
+    } catch (err) {
+      console.warn('⚠️  Redis/Queue background service warning:', err.message);
+    }
+  })();
 };
 
 if (require.main === module) {
