@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: harvik-sales-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+      - key: RATE_LIMIT_MAX
+        value: "5000"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"

@@ -13,7 +13,7 @@ const seedUsers = async () => {
 
     const testUsers = [
       {
-        userId: 'USR-0001',
+        userId: 'USR-0006',
         name: 'Admin Manager',
         email: process.env.INITIAL_ADMIN_EMAIL || 'admin@harvik.com',
         phone: '+91 9876543200',
@@ -24,7 +24,7 @@ const seedUsers = async () => {
         password: hash,
       },
       {
-        userId: 'USR-0002',
+        userId: 'USR-0001',
         name: 'Arjun Sharma',
         email: process.env.ADMIN_EMAIL || 'arjun@harvik.com',
         phone: '+91 9876543210',
@@ -45,9 +45,8 @@ const seedUsers = async () => {
         status: 'ACTIVE',
         password: hash,
       },
-
       {
-        userId: 'USR-0004',
+        userId: 'USR-0002',
         name: 'Priya Patel',
         email: process.env.MANAGER_EMAIL || 'priya@harvik.com',
         phone: '+91 9876543211',
@@ -58,7 +57,7 @@ const seedUsers = async () => {
         password: hash,
       },
       {
-        userId: 'USR-0005',
+        userId: 'USR-0007',
         name: 'Disabled User',
         email: 'disabled@harvik.com',
         phone: '+91 9876543299',
