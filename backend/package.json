@@ -4,6 +4,7 @@
   "description": "Harvik Technologies Sales Dashboard Backend API",
   "main": "src/server.js",
   "scripts": {
+    "build": "echo 'Backend build complete'",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node seed.js",
